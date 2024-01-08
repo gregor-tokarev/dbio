@@ -8,6 +8,16 @@ const { data: tags, refresh } = await useFetch("/api/get_tags", {
 const tagEls = ref<HTMLElement[]>([]);
 
 const focusedTagId = ref<number | null>(null);
+watch(focusedTagId, (value) => {
+  if (!process.client) return;
+
+  if (value) {
+    document.body.style.overflowY = "hidden";
+  } else {
+    document.body.style.overflowY = "unset";
+  }
+});
+
 const focusedTag = computed(() => {
   return tags.value.find((t) => t.id === focusedTagId.value);
 });
