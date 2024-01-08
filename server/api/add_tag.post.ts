@@ -3,12 +3,10 @@ import { TagsTable } from "~/server/schema";
 
 export default defineEventHandler(async (ctx) => {
   const body = await readBody(ctx);
-  const ip = getRequestIP(ctx);
 
-  console.log(body);
   const tag = await db
     .insert(TagsTable)
-    .values({ content: body.content, ip })
+    .values({ content: body.content, ip: ctx.headers.get("x-forwarded-for") })
     .returning();
 
   return tag;
