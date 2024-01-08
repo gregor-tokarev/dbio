@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useLocalStorage } from "@vueuse/core";
 
-const { data: tags, refresh } = await useFetch("/api/get_tags");
+const { data: tags, refresh } = await useFetch("/api/get_tags", {
+  cache: "no-cache",
+});
 
 const tagEls = ref<HTMLElement[]>([]);
 
