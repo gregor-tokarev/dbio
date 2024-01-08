@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import useVuelidate from "@vuelidate/core";
 import { helpers, maxLength, required } from "@vuelidate/validators";
+import { VueSpinner } from "vue3-spinners";
 
 const router = useRouter();
 
@@ -8,10 +9,12 @@ const formState = reactive({
   text: "",
 });
 
+const loading = ref(false);
+
 const v$ = useVuelidate(
   {
     text: {
-      required: helpers.withMessage("Пусто", required),
+      required: helpers.withMessage("Пусто (подметил мой сайт)", required),
       maxLength: helpers.withMessage(
         (ctx) => `Максиум ${ctx.$params.max} символов`,
         maxLength(20),
@@ -26,14 +29,21 @@ async function onSubmit() {
 
   if (v$.value.$error) return;
 
-  await $fetch("/api/add_tag", {
-    method: "POST",
-    body: {
-      content: formState.text,
-    },
-  });
+  loading.value = true;
 
-  router.back();
+  try {
+    await $fetch("/api/add_tag", {
+      method: "POST",
+      body: {
+        content: formState.text,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+  } finally {
+    loading.value = false;
+    router.back();
+  }
 }
 </script>
 
@@ -59,9 +69,10 @@ async function onSubmit() {
         </div>
         <button
           @click="onSubmit"
-          class="min-w-[175px] border-0 bg-dark py-2 text-[24px] text-white"
+          class="flex min-h-[45px] min-w-[175px] justify-center border-0 bg-dark py-2 text-[24px] text-white"
         >
-          Отправить
+          <template v-if="!loading">Отправить</template>
+          <VueSpinner v-else></VueSpinner>
         </button>
       </div>
     </div>

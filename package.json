@@ -26,6 +26,7 @@
     "@vueuse/core": "^10.7.1",
     "drizzle-orm": "^0.29.3",
     "nuxt-icons": "^3.2.1",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "vue3-spinners": "^1.2.2"
   }
 }
