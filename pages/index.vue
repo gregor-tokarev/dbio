@@ -103,7 +103,7 @@ async function togglDislike() {
 
 <template>
   <div class="mx-5 mt-[80px]">
-    <div class="flex">
+    <div class="flex flex-wrap justify-between gap-y-5">
       <p
         v-for="t in tags"
         ref="tagEls"
