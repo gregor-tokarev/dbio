@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { useLocalStorage } from "@vueuse/core";
+import {
+  breakpointsTailwind,
+  useBreakpoints,
+  useLocalStorage,
+} from "@vueuse/core";
 
 const { data: tags, refresh } = await useFetch("/api/get_tags", {
   cache: "no-cache",
 });
 
 const tagEls = ref<HTMLElement[]>([]);
+
+const breakpoints = useBreakpoints(breakpointsTailwind);
 
 const focusedTagId = ref<number | null>(null);
 watch(focusedTagId, (value) => {
@@ -112,14 +118,14 @@ async function togglDislike() {
 </script>
 
 <template>
-  <div class="mx-5 mt-[80px]">
+  <div class="mx-5 mt-[50px] md:mt-[80px]">
     <div class="flex flex-wrap justify-between gap-y-5">
       <p
         v-for="t in tags"
         ref="tagEls"
         :key="t.id"
         @click="focusedTagId = t.id"
-        class="cursor-pointer text-[64px] text-white transition-transform hover:scale-105"
+        class="cursor-pointer text-[32px] text-white transition-transform hover:scale-105 md:text-[64px]"
         :class="{ 'z-50 scale-105': t.id === focusedTagId }"
       >
         {{ t.content }}
@@ -134,10 +140,14 @@ async function togglDislike() {
   <teleport to="body">
     <div
       v-if="focusedTag && focusedTagBounding"
-      class="fixed z-50 flex h-[42px] w-[230px] -translate-x-1/2 overflow-hidden rounded-md"
+      class="-md:translate-x-1/2 fixed bottom-5 left-2.5 right-2.5 z-50 flex h-[42px] w-full overflow-hidden rounded-md md:w-[230px]"
       :style="{
-        left: `${focusedTagBounding.left + focusedTagBounding.width / 2}px`,
-        top: `${focusedTagBounding.top + focusedTagBounding.height + 10}px`,
+        left: breakpoints.isGreaterOrEqual('md')
+          ? `${focusedTagBounding.left + focusedTagBounding.width / 2}px`
+          : 'unset',
+        top: breakpoints.isGreaterOrEqual('md')
+          ? `${focusedTagBounding.top + focusedTagBounding.height + 10}px`
+          : 'unset',
       }"
     >
       <div
@@ -160,7 +170,7 @@ async function togglDislike() {
   <teleport to="body">
     <nuxt-link
       to="add_tag"
-      class="bg-accent hover:bg-accent-dark fixed bottom-10 right-10 flex h-[70px] w-[70px] cursor-pointer items-center justify-center rounded-full transition-colors"
+      class="fixed bottom-10 right-10 flex h-[70px] w-[70px] cursor-pointer items-center justify-center rounded-full bg-accent transition-colors hover:bg-accent-dark"
     >
       <nuxt-icon
         name="pen"
