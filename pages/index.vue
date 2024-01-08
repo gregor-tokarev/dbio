@@ -145,6 +145,18 @@ async function togglDislike() {
       </div>
     </div>
   </teleport>
+  <teleport to="body">
+    <nuxt-link
+      to="add_tag"
+      class="bg-accent hover:bg-accent-dark fixed bottom-10 right-10 flex h-[70px] w-[70px] cursor-pointer items-center justify-center rounded-full transition-colors"
+    >
+      <nuxt-icon
+        name="pen"
+        class="text-gray-100 [&>svg]:!h-10 [&>svg]:!w-10"
+      ></nuxt-icon>
+    </nuxt-link>
+  </teleport>
+  <nuxt-page></nuxt-page>
 </template>
 
 <style scoped></style>
