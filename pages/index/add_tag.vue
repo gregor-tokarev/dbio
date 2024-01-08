@@ -14,7 +14,7 @@ const v$ = useVuelidate(
       required: helpers.withMessage("Пусто", required),
       maxLength: helpers.withMessage(
         (ctx) => `Максиум ${ctx.$params.max} символов`,
-        maxLength(40),
+        maxLength(20),
       ),
     },
   },
@@ -23,6 +23,7 @@ const v$ = useVuelidate(
 
 async function onSubmit() {
   v$.value.$touch();
+
   if (v$.value.$error) return;
 
   await $fetch("/api/add_tag", {
@@ -44,12 +45,18 @@ async function onSubmit() {
     >
       <div class="space-y-10 bg-[#0F0F0F] p-5 md:w-[700px]" @click.stop>
         <h1 class="text-[28px] text-gray-300">Добавить свое обзывательство</h1>
-        <UIInput
-          placeholder="Ну пиши.."
-          @keyup.enter="onSubmit"
-          @blur="v$.text.$touch"
-          v-model="v$.text.$model"
-        />
+        <div class="space-y-4">
+          <UIInput
+            placeholder="Ну пиши.."
+            :error="v$.text.$error"
+            @keyup.enter="onSubmit"
+            @blur="v$.text.$touch"
+            v-model="v$.text.$model"
+          />
+          <div v-if="v$.$dirty" class="text-accent empty:hidden">
+            <p v-for="err in v$.$errors">{{ err.$message }}</p>
+          </div>
+        </div>
         <button
           @click="onSubmit"
           class="min-w-[175px] border-0 bg-dark py-2 text-[24px] text-white"
