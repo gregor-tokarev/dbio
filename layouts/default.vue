@@ -2,6 +2,7 @@
 
 <template>
   <div class="">
+    <Header></Header>
     <slot></slot>
   </div>
 </template>
