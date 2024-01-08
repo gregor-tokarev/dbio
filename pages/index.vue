@@ -140,7 +140,7 @@ async function togglDislike() {
   <teleport to="body">
     <div
       v-if="focusedTag && focusedTagBounding"
-      class="-md:translate-x-1/2 fixed bottom-5 left-2.5 right-2.5 z-50 flex h-[42px] w-full overflow-hidden rounded-md md:w-[230px]"
+      class="fixed bottom-5 left-2.5 right-2.5 z-50 flex h-[42px] w-full overflow-hidden rounded-md md:w-[230px] md:-translate-x-1/2"
       :style="{
         left: breakpoints.isGreaterOrEqual('md')
           ? `${focusedTagBounding.left + focusedTagBounding.width / 2}px`
@@ -170,7 +170,7 @@ async function togglDislike() {
   <teleport to="body">
     <nuxt-link
       to="add_tag"
-      class="fixed bottom-10 right-10 flex h-[70px] w-[70px] cursor-pointer items-center justify-center rounded-full bg-accent transition-colors hover:bg-accent-dark"
+      class="fixed bottom-5 right-5 flex h-[70px] w-[70px] cursor-pointer items-center justify-center rounded-full bg-accent transition-colors hover:bg-accent-dark md:bottom-10 md:right-10"
     >
       <nuxt-icon
         name="pen"
