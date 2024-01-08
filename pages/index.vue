@@ -23,44 +23,84 @@ const focusedTagBounding = computed(() => {
   return focusedTagEl.value?.getBoundingClientRect();
 });
 
-const reactions = useLocalStorage<Record<string, string>>("reactions", {});
+const reactions = useLocalStorage<Record<string, string | null>>(
+  "reactions",
+  {},
+);
+
+const focusedTagReaction = computed(() => {
+  if (!focusedTagId.value) return;
+
+  return reactions.value[focusedTagId.value];
+});
+
+async function reactionRequest(
+  reaction: "like" | "dislike",
+  action: "remove" | "add",
+) {
+  return $fetch(
+    `/api/${action === "remove" ? "remove_reaction" : "add_reaction"}`,
+    {
+      method: "patch",
+      body: {
+        tagId: focusedTagId.value,
+        reaction,
+      },
+    },
+  );
+}
 
 async function togglLike() {
-  if (!focusedTag.value) return;
+  if (!focusedTag.value || !focusedTagId.value) return;
 
-  focusedTag.value.likesCount += 1;
+  if (focusedTagReaction.value === "like") {
+    focusedTag.value.likesCount -= 1;
+    reactions.value[focusedTagId.value] = null;
+    await reactionRequest("like", "remove");
+  } else if (focusedTagReaction.value === "dislike") {
+    focusedTag.value.dislikesCount -= 1;
+    focusedTag.value.likesCount += 1;
+    reactions.value[focusedTagId.value] = "like";
 
-  reactions.value[focusedTagId.value] = "like";
-
-  await $fetch("/api/add_reaction", {
-    method: "PATCH",
-    body: {
-      tagId: focusedTagId.value,
-      reaction: "like",
-    },
-  });
+    await Promise.all([
+      reactionRequest("dislike", "remove"),
+      reactionRequest("like", "add"),
+    ]);
+  } else {
+    focusedTag.value.likesCount += 1;
+    reactions.value[focusedTagId.value] = "like";
+    await reactionRequest("like", "add");
+  }
 
   focusedTagId.value = null;
 }
 async function togglDislike() {
-  if (!focusedTag.value) return;
+  if (!focusedTag.value || !focusedTagId.value) return;
 
-  reactions.value[focusedTagId.value] = "dislike";
+  if (focusedTagReaction.value === "dislike") {
+    focusedTag.value.dislikesCount -= 1;
+    reactions.value[focusedTagId.value] = null;
+    await reactionRequest("dislike", "remove");
+  } else if (focusedTagReaction.value === "like") {
+    focusedTag.value.likesCount -= 1;
+    focusedTag.value.dislikesCount += 1;
+    reactions.value[focusedTagId.value] = "dislike";
 
-  await $fetch("/api/add_reaction", {
-    method: "PATCH",
-    body: {
-      tagId: focusedTagId.value,
-      reaction: "dislike",
-    },
-  });
-
+    await Promise.all([
+      reactionRequest("like", "remove"),
+      reactionRequest("dislike", "add"),
+    ]);
+  } else {
+    focusedTag.value.dislikesCount += 1;
+    reactions.value[focusedTagId.value] = "dislike";
+    await reactionRequest("dislike", "add");
+  }
   focusedTagId.value = null;
 }
 </script>
 
 <template>
-  <div class="mx-5">
+  <div class="mx-5 mt-[80px]">
     <div class="flex">
       <p
         v-for="t in tags"
@@ -91,12 +131,14 @@ async function togglDislike() {
       <div
         @click="togglDislike"
         class="flex grow cursor-pointer items-center justify-center bg-[#B2443C]/40 text-[24px] text-gray-200"
+        :class="{ '!text-accent': focusedTagReaction === 'dislike' }"
       >
         <nuxt-icon name="dislike"></nuxt-icon>
       </div>
       <div
         @click="togglLike"
         class="flex grow cursor-pointer items-center justify-center space-x-2 bg-[#52B742]/40 text-[24px] text-gray-200"
+        :class="{ '!text-accent': focusedTagReaction === 'like' }"
       >
         <p>{{ focusedTag.likesCount }}</p>
         <nuxt-icon name="like"></nuxt-icon>
