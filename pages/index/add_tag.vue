@@ -22,6 +22,7 @@ const v$ = useVuelidate(
 );
 
 async function onSubmit() {
+  v$.value.$touch();
   if (v$.value.$error) return;
 
   await $fetch("/api/add_tag", {

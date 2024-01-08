@@ -11,6 +11,7 @@
 defineProps<{
   modelValue: string;
   placeholder: string;
+  error:
 }>();
 
 const emit = defineEmits<{
