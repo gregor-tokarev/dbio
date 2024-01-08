@@ -10,6 +10,7 @@ const formState = reactive({
 });
 
 const loading = ref(false);
+const success = ref(false);
 
 const v$ = useVuelidate(
   {
@@ -42,7 +43,7 @@ async function onSubmit() {
     console.error(err);
   } finally {
     loading.value = false;
-    router.back();
+    success.value = true;
   }
 }
 </script>
@@ -51,9 +52,13 @@ async function onSubmit() {
   <teleport to="body">
     <div
       class="fixed inset-0 z-10 flex items-center justify-center bg-black/10 backdrop-blur-md"
-      @click="router.back"
+      @click="router.replace('/')"
     >
-      <div class="space-y-10 bg-[#0F0F0F] p-5 md:w-[700px]" @click.stop>
+      <div
+        v-if="!success"
+        class="space-y-10 bg-[#0F0F0F] p-5 md:w-[700px]"
+        @click.stop
+      >
         <h1 class="text-[28px] text-gray-300">Добавить свое обзывательство</h1>
         <div class="space-y-4">
           <UIInput
@@ -74,6 +79,13 @@ async function onSubmit() {
           <template v-if="!loading">Отправить</template>
           <VueSpinner v-else></VueSpinner>
         </button>
+      </div>
+      <div v-else class="space-y-10 bg-green-200 p-10 md:w-[700px]" @click.stop>
+        <p class="text-xl text-green-800">
+          Ваш отзыв отправлен, я его получил, но он не появится на сайте, пока я
+          не решу, что мне понравилось то, что вы написали, если мне не
+          понравится, я вас вычислю по IP. 💋
+        </p>
       </div>
     </div>
   </teleport>
