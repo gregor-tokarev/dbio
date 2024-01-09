@@ -51,15 +51,17 @@ async function onSubmit() {
 <template>
   <teleport to="body">
     <div
-      class="fixed inset-0 z-10 flex items-center justify-center bg-black/10 backdrop-blur-md"
+      class="fixed inset-0 z-10 flex items-stretch justify-stretch bg-black/10 backdrop-blur-md md:items-center md:justify-center"
       @click="router.replace('/')"
     >
       <div
         v-if="!success"
-        class="space-y-10 bg-[#0F0F0F] p-5 md:w-[700px]"
+        class="flex w-full flex-col space-y-10 bg-[#0F0F0F] p-5 md:w-[700px]"
         @click.stop
       >
-        <h1 class="text-[28px] text-gray-300">Добавить свое обзывательство</h1>
+        <h1 class="text-[20px] text-gray-300 md:text-[28px]">
+          Добавить свое обзывательство
+        </h1>
         <div class="space-y-4">
           <UIInput
             placeholder="Ну пиши.."
@@ -74,7 +76,7 @@ async function onSubmit() {
         </div>
         <button
           @click="onSubmit"
-          class="flex min-h-[45px] min-w-[175px] justify-center border-0 bg-dark py-2 text-[24px] text-white"
+          class="flex h-[45px] w-full justify-center border-0 bg-dark py-2 text-[24px] text-white max-md:!mt-auto md:w-[unset] md:min-w-[175px]"
         >
           <template v-if="!loading">Отправить</template>
           <VueSpinner v-else></VueSpinner>
