@@ -140,7 +140,7 @@ async function togglDislike() {
   <teleport to="body">
     <div
       v-if="focusedTag && focusedTagBounding"
-      class="fixed bottom-5 left-2.5 right-2.5 z-50 flex h-[42px] w-full overflow-hidden rounded-md md:w-[230px] md:-translate-x-1/2"
+      class="fixed bottom-5 left-2.5 right-2.5 z-50 flex h-[42px] w-[calc(100%-20px)] overflow-hidden rounded-md md:w-[230px] md:-translate-x-1/2"
       :style="{
         left: breakpoints.isGreaterOrEqual('md')
           ? `${focusedTagBounding.left + focusedTagBounding.width / 2}px`
