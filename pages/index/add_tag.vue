@@ -76,7 +76,7 @@ async function onSubmit() {
         </div>
         <button
           @click="onSubmit"
-          class="flex h-[45px] w-full justify-center border-0 bg-dark py-2 text-[24px] text-white max-md:!mt-auto md:w-[unset] md:min-w-[175px]"
+          class="flex h-[52px] w-full justify-center border-0 bg-dark py-2 text-[24px] text-white max-md:!mt-auto md:w-fit md:min-w-[175px]"
         >
           <template v-if="!loading">Отправить</template>
           <VueSpinner v-else></VueSpinner>
